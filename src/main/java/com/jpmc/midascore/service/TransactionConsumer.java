@@ -11,6 +11,12 @@ import org.springframework.stereotype.Component;
 public class TransactionConsumer {
     private static final Logger logger = LoggerFactory.getLogger(TransactionConsumer.class);
     private int transactionCount = 0;
+    
+    private final TransactionProcessingService transactionProcessingService;
+    
+    public TransactionConsumer(TransactionProcessingService transactionProcessingService) {
+        this.transactionProcessingService = transactionProcessingService;
+    }
 
     @KafkaListener(topics = "${general.kafka-topic}", groupId = "transaction-consumer-group")
     public void consumeTransaction(Transaction transaction) {
@@ -24,5 +30,13 @@ public class TransactionConsumer {
         
         // For debugging - set a breakpoint here to examine transaction details
         System.out.println("Processing transaction: " + transaction);
+        
+        // Process the transaction through the validation and persistence service
+        boolean processed = transactionProcessingService.processTransaction(transaction);
+        if (processed) {
+            logger.info("Transaction #{} processed successfully", transactionCount);
+        } else {
+            logger.warn("Transaction #{} was rejected", transactionCount);
+        }
     }
 }
