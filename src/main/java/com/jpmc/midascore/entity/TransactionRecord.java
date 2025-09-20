@@ -21,6 +21,9 @@ public class TransactionRecord {
     @Column(nullable = false)
     private double amount;
 
+    @Column(nullable = false, columnDefinition = "double default 0.0")
+    private double incentive;
+
     @Column(name = "created_at")
     private java.time.LocalDateTime createdAt;
 
@@ -32,6 +35,15 @@ public class TransactionRecord {
         this.sender = sender;
         this.recipient = recipient;
         this.amount = amount;
+        this.incentive = 0.0; // Default incentive
+        this.createdAt = java.time.LocalDateTime.now();
+    }
+
+    public TransactionRecord(UserRecord sender, UserRecord recipient, double amount, double incentive) {
+        this.sender = sender;
+        this.recipient = recipient;
+        this.amount = amount;
+        this.incentive = incentive;
         this.createdAt = java.time.LocalDateTime.now();
     }
 
@@ -64,6 +76,14 @@ public class TransactionRecord {
         this.amount = amount;
     }
 
+    public double getIncentive() {
+        return incentive;
+    }
+
+    public void setIncentive(double incentive) {
+        this.incentive = incentive;
+    }
+
     public java.time.LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -74,8 +94,8 @@ public class TransactionRecord {
 
     @Override
     public String toString() {
-        return String.format("TransactionRecord[id=%d, sender=%s, recipient=%s, amount=%.2f, createdAt=%s]",
+        return String.format("TransactionRecord[id=%d, sender=%s, recipient=%s, amount=%.2f, incentive=%.2f, createdAt=%s]",
                 id, sender != null ? sender.getName() : "null", recipient != null ? recipient.getName() : "null", 
-                amount, createdAt);
+                amount, incentive, createdAt);
     }
 }

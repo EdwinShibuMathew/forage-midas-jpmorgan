@@ -1,2 +1,5 @@
 general:
   kafka-topic: test-topic
+
+server:
+  port: 9090
